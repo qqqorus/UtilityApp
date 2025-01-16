@@ -1,54 +1,66 @@
-# menu variables
-menu = ("cup noodles", "chips", "croissant", "orange juice", "iced americano", "karak tea")
-# menu_price = [AED10, AED5, AED2.50, AED3.50, AED5, AED1]
+menu = {
+    "HF01": {"name": "Cup Noodles", "price": 10.00, "stock": 11, "category": "Hot Food"},
+    "HF02": {"name": "Hot Pockets", "price": 15.00, "stock": 9, "category": "Hot Food"},
+    "S01": {"name": "Chips", "price": 5.00, "stock": 4, "category": "Snacks"},
+    "S02": {"name": "Croissant", "price": 2.50, "stock": 10, "category": "Snacks"},
+    "S03": {"name": "Chocolate", "price": 1.99, "stock": 15, "category": "Snacks"},
+    "CD01": {"name": "Orange Juice", "price": 3.50, "stock": 7, "category": "Cold Drinks"},
+    "CD02": {"name": "Iced Americano", "price": 5.00, "stock": 5, "category": "Cold Drinks"},
+    "CD03": {"name": "Soda", "price": 5.00, "stock": 14, "category": "Cold Drinks"},
+    "HD01": {"name": "Karak Tea", "price": 1.00, "stock": 3, "category": "Hot Drinks"}
+}
 
-# welcome message
-print("Hey there! Welcome to Hamartia Vending Machine!")
-# menu 
-print("""MENU:\n
-      Snacks:\t\t\t Drinks:
-      0 - cup noodles\t\t 3 - orange juice
-      1 - chips\t\t\t 4 - iced americano
-      2 - croissant\t\t 5 - karak tea\n""")
-
-order_code = int(input("What can I get for you today? Please enter the order code.\n"))
-user_order = menu[order_code]
-user_bill = 0
-print(f"One {user_order} coming right up!")
-
-# while order_code >= 0 and order_code <= 5:    
-if order_code == 0:
-        user_bill += 10
-        print(f"The {user_order} cost AED 10")
-elif order_code == 2:
-        user_bill += 2.50
-        print(f"The {user_order} cost AED 2.50")
-elif order_code == 3:
-        user_bill += 3.50
-        print(f"The {user_order} cost AED 3.50")
-elif order_code == 5:
-        user_bill += 1
-        print(f"The {user_order} cost AED 1")
-elif order_code < 1 or order_code > 5:
-        print("You put the wrong number")
-else:
-        user_bill+= 5
-        print(f"The {user_order} cost AED 5")
+def menu_list():
+    print("MENU")
+    for code, product in menu.items():
+        print(f"{code}: {product['name']} - £{product['price']:.2f} ({product['stock']} in stock)")
+    print("\n")
+    
+def ask_payment(user_choice):
+    user_payment = 0
+    product = menu[user_choice]
+    price = product["price"]
+    if user_payment != price:
+        bill = float(input("Please insert the correct amount in coins or notes: £"))
+        user_payment += bill
+    return user_payment
         
-add_item = (input("Would you like to purchase another item?\n"))
-if add_item.lower == "Yes":
-    print(input("Enter your code: "))
-elif add_item.lower == "No":
-    print("okie")
+def dispense_product(user_choice):
+    product = menu[user_choice]
+    name = product["name"]
+    if product["stock"] > 0:
+        product["stock"] -= 1 
+        print(f"\nDispensing {name}...")
+        print(f"{name} dispensed.") 
+        print("\nThank you for using Hamartia Vending Machine!\n")
+    else:
+        print("Sorry, this product is out of stock.") 
+        print("\nThank you for using Hamartia Vending Machine!\n")
+
+def return_change(user_payment, price):
+    change = user_payment - price
+    if change > 0:
+        print(f"Your change is £{change:.2f}.")
+
+def main():
+    while True: 
+        menu_list()
+        user_choice = input("Enter product code (or 'Q' to quit): ")
+        if user_choice.lower() == 'q':
+            break
         
-user_payment = float(input("Please enter the correct amount: "))
-if user_payment == user_bill:
-    print("You paid the correct amount.")    
-elif user_payment < user_bill:
-    input("You paid short. Please pay the correct amount: ")
-    if user_payment == user_bill:
-        print("You paid the correct amount.")
-else:
-    print("You paid more than the amount asked. Please wait for the change.")
-    change = user_payment - user_bill
-    print(f"Your change is AED {change:.2f}. Thank you for using our services!")
+        product = menu.get(user_choice)
+        
+        if product:
+            if product["stock"] > 0:
+                user_payment = ask_payment(user_choice)
+                return_change(user_payment, product["price"])
+                dispense_product(user_choice)
+            else:
+                print("Sorry, this product is out of stock.\n")
+        else:
+            print("Invalid product code.\n\n") 
+        
+    
+if __name__ == "__main__":
+    main()
