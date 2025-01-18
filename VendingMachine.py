@@ -1,18 +1,39 @@
 # import random
 
-class Product():
+class Product:
     def __init__(code, name, price, stock, category):
         code.name = name
         code.price = price
         code.stock = stock
         code.category = category
 
-HF01 = Product("Cup Noodles", 10.00, 11, "Hot Food")
-HF02 = Product("Cup Noodles", 10.00, 11, "Hot Food")
-S01 = Product("Cup Noodles", 10.00, 11, "Hot Food")
-S02 = Product("Cup Noodles", 10.00, 11, "Hot Food")
-S03 = Product("Cup Noodles", 10.00, 11, "Hot Food")
+class VendingMachine:
+    def __init__(code):
+        code.products = [
+            Product("Cup Noodles", 10.00, 11, "Hot Food"),
+            Product("Hot Pockets", 15.00, 9, "Hot Food"),
+            Product("Chips", 5.00, 4, "Snacks"),
+            Product("Croissant", 2.50, 10, "Snacks"),
+            Product("Chocolate", 1.99, 15, "Snacks"),
+            Product("Orange Juice", 3.50, 7, "Cold Drinks"),
+            Product("Iced Americano", 5.00, 5, "Cold Drinks"),
+            Product("Soda", 5.00, 14, "Cold Drinks"),
+            Product("Karak Tea", 1.00, 3, "Hot Drinks")
+        ]
+        
+    def menu_display(code): # this is where the menu will be displayed
+        menu_title = "⋆ ˚｡⋆୨ ʚ MENU ɞ ୧⋆ ˚｡⋆" # menu header variable
+        print(f'{menu_title:^55}') # centering the menu header
+        for code, product in enumerate(code.products, start=100,): # displaying the products one by one until the list ends
+            print(f"{code}: {product.name:^24} - £{product.price:.2f} ({product.stock} in stock)") 
+        print("\n")
 
+def main():
+    vending_machine = VendingMachine()
+    vending_machine.menu_display()
+    
+if __name__ == "__main__":
+    main()
 
 # # a menu of drinks and snacks presented via the console
 # menu = {
@@ -30,7 +51,7 @@ S03 = Product("Cup Noodles", 10.00, 11, "Hot Food")
 #     "HD01": {"name": "Karak Tea", "price": 1.00, "stock": 3, "category": "Hot Drinks"}
 # }
 
-# def menu_list(): # this is where the menu will be displayed
+# def menu_display(): # this is where the menu will be displayed
 #     print("╭────────────────────────────────────────────────────.★..─╮\n\n" +
 # """\t╭───────────────────༺♡༻──────────────────╮
 # \t   Welcome to Hamartia Vending Machine!
@@ -93,7 +114,7 @@ S03 = Product("Cup Noodles", 10.00, 11, "Hot Food")
 # def main(): # main interface
 #     last_purchase = None # the last_purchase determines what product will be suggested after purchasing
 #     while True: # ensures that the code will not finish unless the user will input 'q' 
-#         menu_list()
+#         menu_display()
 #         # a way of allowing users to buy additional items; the code will not finish executing unless the user types 'q'
 #         user_choice = input("Enter product code (or 'Q' to quit): ") 
 #         if user_choice.lower() == 'q':
