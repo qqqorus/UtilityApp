@@ -1,15 +1,15 @@
-# import random
+import random
 
 class Product:
-    def __init__(code, name, price, stock, category):
-        code.name = name
-        code.price = price
-        code.stock = stock
-        code.category = category
+    def __init__(self, name, price, stock, category):
+        self.name = name
+        self.price = price
+        self.stock = stock
+        self.category = category
 
 class VendingMachine:
-    def __init__(code):
-        code.products = [
+    def __init__(self):
+        self.products = [
             Product("Cup Noodles", 10.00, 11, "Hot Food"),
             Product("Hot Pockets", 15.00, 9, "Hot Food"),
             Product("Chips", 5.00, 4, "Snacks"),
@@ -21,16 +21,82 @@ class VendingMachine:
             Product("Karak Tea", 1.00, 3, "Hot Drinks")
         ]
         
-    def menu_display(code): # this is where the menu will be displayed
-        menu_title = "⋆ ˚｡⋆୨ ʚ MENU ɞ ୧⋆ ˚｡⋆" # menu header variable
-        print(f'{menu_title:^55}') # centering the menu header
-        for code, product in enumerate(code.products, start=100,): # displaying the products one by one until the list ends
-            print(f"{code}: {product.name:^24} - £{product.price:.2f} ({product.stock} in stock)") 
-        print("\n")
+        self.payment = 0.00 # setting the user payment to zero
+        
+    def menu_display(self): # this is where the menu will be displayed
+        for code, product in enumerate(self.products, start=1,): # displaying the products one by one until the list ends
+            print(f"\t[{code}]: {product.name:^20} - £{product.price:.2f} ({product.stock} in stock)") 
+        
+    def ask_payment(self, payment): # the parameter is the code that the user chose from the menu
+        if payment <= 0.00:
+            raise ValueError
+        self.payment += payment
+            
+    def dispense_product(user_choice): # the parameter is the code that the user chose from the menu
+        product = menu[user_choice]
+        name = product["name"]
+        if product["stock"] > 0: # as long as the stock is greater than one it will continue its service
+            product["stock"] -= 1 # the product stock will be reduced by 1 whenever the user purchases it
+            print(f"\nDispensing {name}...")
+            print(f"{name} dispensed.") # a message that tells the user that a particular drink or snack has been dispensed
+            print("\nThank you for using Hamartia Vending Machine!\n")
+        else:
+            print("Sorry, this product is out of stock.") # a message that tells the user that a product is out of stock
+            print("\nThank you for using Hamartia Vending Machine!\n")
+            
+    def return_change(user_payment, price): # the parameter is the user's payment and the price of the product
+        change = user_payment - price # change is the payment subtracted by the price
+        if change > 0: # if the change is greater than zero then there will be change given
+            print(f"Your change is £{change:.2f}.") # a message that tells the user how much change they have received
 
+    def suggest_product(last_purchase): # the parameter is the user's last purchase
+        if last_purchase["category"] == "Hot Drinks" or last_purchase["category"] == "Cold Drinks":
+            suggestions = ["S01", "S02", "S03"] # if the product purchased is a drink then the machine will suggest a snack
+        elif last_purchase["category"] == "Snacks":
+            suggestions = ["CD01", "CD02", "CD03", "HD01"] # if the product purchased is a snack then the machine will suggest a drink
+        else:
+            suggestions = ["CD01", "CD03"] # if the product purchased is a hot food then the machine will suggest a cold drink
+        return random.choice(suggestions) # randomizes the selection of suggestions within a certain category of products
+
+    
 def main():
+    print("╭────────────────────────────────────────────────────────.★..─╮\n\n" +
+        """\t ╭────────────────────༺♡༻───────────────────╮
+    \t     Welcome to Hamartia Vending Machine!
+\t ╰──────────────────────────────────────────╯\n\n""") # display of the vending machine name
+    menu_title = "⋆ ˚｡⋆୨ ʚ MENU ɞ ୧⋆ ˚｡⋆" # menu header variable
+    print(f'    {menu_title:^55}') # centering the menu header
+    print("     ╭ \t\t\t\t\t\t\t ╮")
+    
     vending_machine = VendingMachine()
     vending_machine.menu_display()
+
+    print("     ╰ \t\t\t\t\t\t\t ╯")
+    print("\n")
+    
+    while True:
+        try:
+            user_choice = int(input("Enter product code (or 'Q' to quit): "))
+        except ValueError:
+            continue
+        if user_choice in range(1, len(vending_machine.products)+1):
+            break
+    product = vending_machine.products[user_choice-1]
+    print(f"You's selected {product.name}, please input the correct payment.")
+    while vending_machine.payment < product.price:
+        print(f"You've inserted {vending_machine.payment:.2f} into the machine.")
+        while True:
+            try:
+                money_to_insert = float(input("Enter the amount of money: "))
+                vending_machine.ask_payment(money_to_insert)
+            except ValueError:
+                continue
+            else:
+                break
+    print(f"Thank you! Please take your {product.name}")
+    print(f"Your change is {vending_machine.payment - product.price:.2f}")
+
+    return 0
     
 if __name__ == "__main__":
     main()
